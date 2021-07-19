@@ -1,5 +1,4 @@
 from typing import NamedTuple
-from itertools import product
 
 class Source(NamedTuple):
     src: str
