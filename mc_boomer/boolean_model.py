@@ -2,7 +2,7 @@ from collections import defaultdict
 from itertools import product
 from copy import copy
 import random
-from util import bool_state, to_int, rotate_list
+from mc_boomer.util import bool_state, to_int, rotate_list
 #import networkx as nx
 
 class BooleanModel():
@@ -72,7 +72,7 @@ class BooleanModel():
                     rule = f'not ({inhibitor_rule})'
                 else:
                     rule = False
-                rules.append(f"new_state['{dst}'] = {rule}")
+                rules.append(f'new_state[{dst}] = {rule}')
 
             self.rule_string = '\n'.join(rules)
             # Compile the string into Python bytecode that we can exec later

@@ -10,7 +10,7 @@ import heapq
 import pickle
 import json
 import gzip
-from util import gteq
+from mc_boomer.util import gteq
 
 
 def randomPolicy(state):

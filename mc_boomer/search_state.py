@@ -1,6 +1,6 @@
 from copy import copy
-import attractors
-from action import Action
+import mc_boomer.attractors
+from mc_boomer.action import Action
 
 class SearchState():
     def __init__(self, model, data_attractors, start_states, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):

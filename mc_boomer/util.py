@@ -1,6 +1,6 @@
 import math
 import pickle
-from action import Action
+from mc_boomer.action import Action
 import gzip
 
 class Avg():

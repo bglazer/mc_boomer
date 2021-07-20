@@ -1,9 +1,9 @@
 from collections import Counter
 from functools import reduce
 from itertools import combinations, product
-from util import action_set
-from tree_search import add_to_rules
-import initialize 
+from mc_boomer.util import action_set
+from mc_boomer.search_state import add_to_rules
+import mc_boomer.initialize 
 
 def common(models, order=[1], verbose=False, excluded=set()):
     if type(order) is not list:

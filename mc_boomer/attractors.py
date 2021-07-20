@@ -1,6 +1,5 @@
-from itertools import product, permutations
-from copy import deepcopy, copy
-from fractions import Fraction
+from itertools import product
+from copy import copy
 
 def pairwise_distance(a,b, penalties=None):
     distances = {}

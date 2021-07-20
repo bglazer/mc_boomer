@@ -1,1 +1,0 @@
-print('mc_boomer')

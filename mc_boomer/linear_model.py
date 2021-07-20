@@ -1,14 +1,23 @@
 from collections import defaultdict
 import random
-from util import to_int, rotate_list
+from mc_boomer.util import to_int, rotate_list
 from copy import copy
-from boolean_model import BooleanModel
+from mc_boomer.boolean_model import BooleanModel
 
 class LinearModel(BooleanModel):
     def __init__(self, rules, num_cells=4):
-        super.__init__(rules)
+        super().__init__(rules)
         self.num_cells = num_cells
 
+    def __copy__(self):
+        rules = dict()
+        for dst,(act,inh) in self.rules.items():
+            rules[dst] = ([],[])
+            for src in act:
+                rules[dst][0].append(src)
+            for src in inh:
+                rules[dst][1].append(src)
+        return LinearModel(rules=rules)
 
     def print_expression(self, expression):
         rule = []
@@ -67,7 +76,7 @@ class LinearModel(BooleanModel):
             if cell_index-1 >= 0: 
                 cell_indexes.append(cell_index-1)
             # "right" side boundary check
-            if cell_index+1 <= spm.num_cells-1:
+            if cell_index+1 <= self.num_cells-1:
                 cell_indexes.append(cell_index+1)
 
             if len(external_srcs) > 0:
