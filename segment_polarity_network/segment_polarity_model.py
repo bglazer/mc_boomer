@@ -1,14 +1,11 @@
-from collections import defaultdict
-import random
-from util import to_int, rotate_list
-from copy import copy
-from boolean_model import BooleanModel
+from mc_boomer.linear_model import LinearModel
 
 class SegmentPolarityModel(LinearModel):
     def update_sync(self):
         new_state = dict()
         exec(self.update)
         self.state = new_state
+        # TODO add explicit control of constitutively activated patterns
         # SLP is constituitively expressed in the following pattern, repeating every 4 cells:
         # True True False False 
         # The code below recreates this pattern for any number of cells

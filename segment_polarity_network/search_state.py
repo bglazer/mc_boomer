@@ -1,10 +1,10 @@
 import pickle
 from copy import copy
-from mcts import mcts
-import attractors 
+from mc_boomer import attractors 
 from attractor_data import en_overexpression, hh_overexpression, initial_perturb_true_attractors, knockout_true_attractors, wild_type_initial, wild_type_true_attractors
-from action import Action
-from util import print_attractors
+from mc_boomer.action import Action
+from mc_boomer.util import print_attractors
+from mc_boomer.search_state import SearchState
 
 def knockout(model, knockout_nodes):
     model = copy(model)
@@ -21,7 +21,7 @@ def knockout(model, knockout_nodes):
                 model.rules[node] = (activ, inhib)
     return model
 
-class SearchState():
+class SegmentPolaritySearchState(SearchState):
     def __init__(self, model, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
         self.model = copy(model)
         self.stop_prior = stop_prior
@@ -34,12 +34,12 @@ class SearchState():
     
 
     def __copy__(self):
-        newstate = SearchState(self.model,
-                               self.stop_prior,
-                               self.min_edges,
-                               self.max_edges,
-                               actions=copy(self.actions),
-                               num_edges = self.num_edges)
+        newstate = SegmentPolaritySearchState(self.model,
+                                              self.stop_prior,
+                                              self.min_edges,
+                                              self.max_edges,
+                                              actions=copy(self.actions),
+                                              num_edges = self.num_edges)
         return newstate
 
     

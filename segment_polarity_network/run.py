@@ -1,6 +1,6 @@
-from search_state import SearchState
+from search_state import SegmentPolaritySearchState
 import initialize
-from mcts import mcts
+from mc_boomer.mcts import mcts
 
 def search(min_edges, max_edges, num_steps=None, search_time=None, 
            stop_prior=.9, explorationConstant=.5, rave_equiv_param=None, cache=False,
@@ -9,11 +9,11 @@ def search(min_edges, max_edges, num_steps=None, search_time=None,
 
     spm, initial_actions = initialize.initialState()
 
-    state = SearchState(spm, 
-                        stop_prior,
-                        min_edges=min_edges,
-                        max_edges=max_edges,
-                        actions=initial_actions)
+    state = SegmentPolaritySearchState(spm, 
+                                       stop_prior,
+                                       min_edges=min_edges,
+                                       max_edges=max_edges,
+                                       actions=initial_actions)
 
     if (num_steps is None and search_time is None) or \
        (num_steps is not None and search_time is not None):

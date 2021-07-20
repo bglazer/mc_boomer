@@ -1,7 +1,7 @@
-from action import Action, Source 
-from tree_search import add_to_rules, SearchState
+from mc_boomer.action import Action, Source 
+from mc_boomer.search_state import SegmentPolaritySearchState
 import initialize
-from util import print_attractors, format_actions
+from mc_boomer.util import print_attractors, format_actions
 
 actions = [
 # wg
@@ -51,13 +51,13 @@ Action(srcs=(Source('HH', 'e'),), dst='CIR', type='i'),
 if __name__ == '__main__':
     spm = initialize.emptyModel()
     for action in actions:
-        add_to_rules(action, spm)
+        spm.add(action)
     for dst,rule in spm.rules.items():
         print(f'{dst}: {rule},')
     #spm.compile_rules(verbose=True)
     spm.compile_rules(verbose=False)
         
-    state = SearchState(spm, 0, 0, 0, [])
+    state = SegmentPolaritySearchState(spm, 0, 0, 0, [])
     attractors = state.getAttractors()
     state.printAttractors(attractors)
     #
@@ -74,7 +74,7 @@ if __name__ == '__main__':
        
         spm.compile_rules(verbose=False)
             
-        state = SearchState(spm, 0, 0, 0, [])
+        state = SegmentPolaritySearchState(spm, 0, 0, 0, [])
         
         reward = state.getReward()
         print(f'{1-reward:6.4f}', end=' ')

@@ -1,8 +1,6 @@
 from itertools import permutations, product
 from segment_polarity_model import SegmentPolarityModel
-from action import Action, Source
-from tree_search import add_to_rules
-
+from mc_boomer.action import Action, Source
 
 def emptyModel():
     num_cells = 4
@@ -118,7 +116,7 @@ def initialState():
     # Aggregate all the rules that we manually specify
     custom_rules = ci_rules + gene_protein_rules + ph_rule + ptc_rule + smo_rule + external_internal_rules
     for action in custom_rules:
-        spm = add_to_rules(action, spm)
+        spm.add(action)
         if action in actions:
             actions.remove(action)
 
