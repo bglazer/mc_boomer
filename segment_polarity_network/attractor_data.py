@@ -113,7 +113,7 @@ hh_overexpression = [dict([
 # Attractors
 #####################
 
-wild_type_true_attractors = ({(
+wild_type_true_attractors = {((
     (('wg', 0) , False), (('wg', 1) , True ), (('wg', 2) , False), (('wg', 3) , False),
     (('WG', 0) , False), (('WG', 1) , True ), (('WG', 2) , False), (('WG', 3) , False),
     (('en', 0) , False), (('en', 1) , False), (('en', 2) , True ), (('en', 3) , False),
@@ -129,9 +129,9 @@ wild_type_true_attractors = ({(
     (('CIA', 0), False), (('CIA', 1), True ), (('CIA', 2), False), (('CIA', 3), True ),
     (('CIR', 0), True ), (('CIR', 1), False), (('CIR', 2), False), (('CIR', 3), False),
     (('SLP', 0), True ), (('SLP', 1), True ), (('SLP', 2), False), (('SLP', 3), False),
-):1}, {})
+),):1}
 
-initial_perturb_true_attractors = ({(
+initial_perturb_true_attractors = {((
     (('wg', 0) , True ), (('wg', 1) , True ), (('wg', 2) , False), (('wg', 3) , False), 
     (('WG', 0) , True ), (('WG', 1) , True ), (('WG', 2) , False), (('WG', 3) , False), 
     (('en', 0) , False), (('en', 1) , False), (('en', 2) , True ), (('en', 3) , True ), 
@@ -147,9 +147,9 @@ initial_perturb_true_attractors = ({(
     (('CIA', 0), True ), (('CIA', 1), True ), (('CIA', 2), False), (('CIA', 3), False), 
     (('CIR', 0), False), (('CIR', 1), False), (('CIR', 2), False), (('CIR', 3), False), 
     (('SLP', 0), True ), (('SLP', 1), True ), (('SLP', 2), False), (('SLP', 3), False),
-):1},{})
+),):1}
 
-knockout_true_attractors = ({(
+knockout_true_attractors = {((
     (('wg', 0) , False), (('wg', 1) , False), (('wg', 2) , False), (('wg', 3) , False), 
     (('WG', 0) , False), (('WG', 1) , False), (('WG', 2) , False), (('WG', 3) , False), 
     (('en', 0) , False), (('en', 1) , False), (('en', 2) , False), (('en', 3) , False), 
@@ -165,4 +165,4 @@ knockout_true_attractors = ({(
     (('CIA', 0), False), (('CIA', 1), False), (('CIA', 2), False), (('CIA', 3), False), 
     (('CIR', 0), True ), (('CIR', 1), True ), (('CIR', 2), True ), (('CIR', 3), True ), 
     (('SLP', 0), True ), (('SLP', 1), True ), (('SLP', 2), False), (('SLP', 3), False),
-):1}, {})
+),):1}

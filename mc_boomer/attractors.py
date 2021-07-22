@@ -23,10 +23,9 @@ def pairwise_distance(a,b, penalties=None):
 
 
 def convert_cyclic(attractors):
-    stable, cycles = attractors
     combined = dict()
 
-    for cycle, count in cycles.items():    
+    for cycle, count in attractors.items():    
         len_cycle = len(cycle)
         num_nodes = len(cycle[0])
         squashed = [[key,0] for key,value in cycle[0]]
@@ -39,9 +38,6 @@ def convert_cyclic(attractors):
             combined[squashed] = 0
         combined[squashed] += count
 
-    for state, count in stable.items():
-        combined[state] = count
-    
     return combined
 
 
