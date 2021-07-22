@@ -37,7 +37,7 @@ parameters = {
 }
 
 timestamp = datetime.strftime(datetime.now(), format='%Y%m%d-%H%M')
-data_dir = '/home/bglaze/segment_polarity/data'
+data_dir = './data'
 
 
 def start(job):
