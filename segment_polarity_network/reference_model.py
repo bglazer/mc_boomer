@@ -54,8 +54,8 @@ if __name__ == '__main__':
         spm.add(action)
     for dst,rule in spm.rules.items():
         print(f'{dst}: {rule},')
-    #spm.compile_rules(verbose=True)
-    spm.compile_rules(verbose=False)
+    spm.compile_rules(verbose=True)
+    #spm.compile_rules(verbose=False)
         
     state = SegmentPolaritySearchState(spm, 0, 0, 0, [])
     attractors = state.getAttractors()
