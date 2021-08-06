@@ -23,7 +23,7 @@ def knockout(model, knockout_nodes):
 
 class SegmentPolaritySearchState(SearchState):
     def __init__(self, model, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
-        self.model = copy(model)
+        self.model = model 
         self.stop_prior = stop_prior
         self.max_edges = max_edges
         self.min_edges = min_edges
@@ -34,7 +34,7 @@ class SegmentPolaritySearchState(SearchState):
     
 
     def __copy__(self):
-        newstate = SegmentPolaritySearchState(self.model,
+        newstate = SegmentPolaritySearchState(copy(self.model),
                                               self.stop_prior,
                                               self.min_edges,
                                               self.max_edges,
