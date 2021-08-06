@@ -1,6 +1,16 @@
 from mc_boomer.linear_model import LinearModel
 
 class SegmentPolarityModel(LinearModel):
+    def __copy__(self):
+        rules = dict()
+        for dst,(act,inh) in self.rules.items():
+            rules[dst] = ([],[])
+            for src in act:
+                rules[dst][0].append(src)
+            for src in inh:
+                rules[dst][1].append(src)
+        return SegmentPolarityModel(rules=rules)
+
     def update_sync(self):
         new_state = dict()
         exec(self.update)
