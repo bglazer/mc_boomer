@@ -1,5 +1,5 @@
 from mc_boomer.action import Action, Source 
-from mc_boomer.search_state import SegmentPolaritySearchState
+from search_state import SegmentPolaritySearchState
 import initialize
 from mc_boomer.util import print_attractors, format_actions
 
@@ -52,17 +52,16 @@ if __name__ == '__main__':
     spm = initialize.emptyModel()
     for action in actions:
         spm.add(action)
-    for dst,rule in spm.rules.items():
-        print(f'{dst}: {rule},')
+
     spm.compile_rules(verbose=True)
     #spm.compile_rules(verbose=False)
         
-    state = SegmentPolaritySearchState(spm, 0, 0, 0, [])
+    state = SegmentPolaritySearchState(spm)
     attractors = state.getAttractors()
     state.printAttractors(attractors)
     #
     reward = state.getReward()
-    print(f'Similarity reduction: {1-reward:.4f}')
+    print(f'Similarity: {reward:.4f}')
 
     print(f'Similarity reduction')
     for i in range(len(actions)):
@@ -70,11 +69,11 @@ if __name__ == '__main__':
         one_out_actions.pop(i)
         spm = initialize.emptyModel()
         for action in one_out_actions:
-            add_to_rules(action, spm)
+            spm.add(action)
        
         spm.compile_rules(verbose=False)
             
-        state = SegmentPolaritySearchState(spm, 0, 0, 0, [])
+        state = SegmentPolaritySearchState(spm)
         
         reward = state.getReward()
         print(f'{1-reward:6.4f}', end=' ')
