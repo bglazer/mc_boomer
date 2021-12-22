@@ -1,50 +1,50 @@
-from mc_boomer.action import Action, Source 
+from mc_boomer.action import Action, MultiSource 
 from search_state import SegmentPolaritySearchState
 import initialize
 from mc_boomer.util import print_attractors, format_actions
 
 actions = [
 # wg
-Action(srcs=(Source('CIA', 'i'),Source('SLP', 'i')), dst='wg', type='a'),
-Action(srcs=(Source('CIA', 'i'),Source('wg', 'i')), dst='wg', type='a'),
-Action(srcs=(Source('SLP', 'i'),Source('wg', 'i')), dst='wg', type='a'),
-Action(srcs=(Source('CIR','i'),), dst='wg', type='i'),
+Action(srcs=(MultiSource('CIA', 'i'),MultiSource('SLP', 'i')), dst='wg', type='a'),
+Action(srcs=(MultiSource('CIA', 'i'),MultiSource('wg', 'i')), dst='wg', type='a'),
+Action(srcs=(MultiSource('SLP', 'i'),MultiSource('wg', 'i')), dst='wg', type='a'),
+Action(srcs=(MultiSource('CIR','i'),), dst='wg', type='i'),
 # WG
-Action(srcs=(Source('wg','i'),), dst='WG', type='a'),
+Action(srcs=(MultiSource('wg','i'),), dst='WG', type='a'),
 # en
-Action(srcs=(Source('WG','e'),), dst='en', type='a'),
-Action(srcs=(Source('SLP','i'),), dst='en', type='i'),
+Action(srcs=(MultiSource('WG','e'),), dst='en', type='a'),
+Action(srcs=(MultiSource('SLP','i'),), dst='en', type='i'),
 # EN
-Action(srcs=(Source('en','i'),), dst='EN', type='a'),
+Action(srcs=(MultiSource('en','i'),), dst='EN', type='a'),
 # hh
-Action(srcs=(Source('EN','i'),), dst='hh', type='a'),
-Action(srcs=(Source('CIR','i'),), dst='hh', type='i'),
+Action(srcs=(MultiSource('EN','i'),), dst='hh', type='a'),
+Action(srcs=(MultiSource('CIR','i'),), dst='hh', type='i'),
 # HH
-Action(srcs=(Source('hh','i'),), dst='HH', type='a'),
+Action(srcs=(MultiSource('hh','i'),), dst='HH', type='a'),
 # ptc
-Action(srcs=(Source('CIA','i'),), dst='ptc', type='a'),
-Action(srcs=(Source('EN','i'),), dst='ptc', type='i'),
-Action(srcs=(Source('CIR','i'),), dst='ptc', type='i'),
+Action(srcs=(MultiSource('CIA','i'),), dst='ptc', type='a'),
+Action(srcs=(MultiSource('EN','i'),), dst='ptc', type='i'),
+Action(srcs=(MultiSource('CIR','i'),), dst='ptc', type='i'),
 # PTC
-Action(srcs=(Source('ptc','i'),), dst='PTC', type='a'),
-Action(srcs=(Source('PTC','i'), Source('~HH','e')), dst='PTC', type='a'),
+Action(srcs=(MultiSource('ptc','i'),), dst='PTC', type='a'),
+Action(srcs=(MultiSource('PTC','i'), MultiSource('~HH','e')), dst='PTC', type='a'),
 
 # PH 
-Action(srcs=(Source('PTC','i'),Source('HH','e')), dst='PH', type='a'),
+Action(srcs=(MultiSource('PTC','i'),MultiSource('HH','e')), dst='PH', type='a'),
 # SMO
-Action(srcs=(Source('~PTC','i'),), dst='SMO', type='a'),
-Action(srcs=(Source('HH','e'),), dst='SMO', type='a'),
+Action(srcs=(MultiSource('~PTC','i'),), dst='SMO', type='a'),
+Action(srcs=(MultiSource('HH','e'),), dst='SMO', type='a'),
 # ci
-Action(srcs=(Source('EN','i'),), dst='ci', type='i'),
+Action(srcs=(MultiSource('EN','i'),), dst='ci', type='i'),
 # CI
-Action(srcs=(Source('ci','i'),), dst='CI', type='a'),
+Action(srcs=(MultiSource('ci','i'),), dst='CI', type='a'),
 # CIA
-Action(srcs=(Source('CI', 'i'), Source('SMO', 'i')), dst='CIA', type='a'),
-Action(srcs=(Source('CI', 'i'), Source('HH', 'e')), dst='CIA', type='a'),
+Action(srcs=(MultiSource('CI', 'i'), MultiSource('SMO', 'i')), dst='CIA', type='a'),
+Action(srcs=(MultiSource('CI', 'i'), MultiSource('HH', 'e')), dst='CIA', type='a'),
 # CIR
-Action(srcs=(Source('CI', 'i'),), dst='CIR', type='a'),
-Action(srcs=(Source('SMO', 'i'),), dst='CIR', type='i'),
-Action(srcs=(Source('HH', 'e'),), dst='CIR', type='i'),
+Action(srcs=(MultiSource('CI', 'i'),), dst='CIR', type='a'),
+Action(srcs=(MultiSource('SMO', 'i'),), dst='CIR', type='i'),
+Action(srcs=(MultiSource('HH', 'e'),), dst='CIR', type='i'),
 ]
 
 
