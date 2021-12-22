@@ -21,9 +21,7 @@ class SearchState():
                                self.data_attractors,
                                self.start_states,
                                self.stop_prior,
-                               self.min_edges,
-                               self.max_edges,
-                               actions=copy(self.actions),
+                               self.min_edges, self.max_edges, actions=copy(self.actions),
                                num_edges = self.num_edges)
         return newstate
         
@@ -32,19 +30,19 @@ class SearchState():
         return list(self.actions.items())
     
     #Returns the state which results from taking action 
-    def takeAction(self, action): 
+    def takeAction(self, action, compile=True): 
         newstate = copy(self)
         
         # the action has two parts, the first defines the action to take, adding an edge, etc.
         # the second part is the prior probability of taking that action, 
-        # used by the MCTS algorithm
 
         if action == ('stop'):
             newstate.stopped = True
             return newstate
             
         newstate.model.add(action)
-        newstate.model.compile_rules()
+        if compile:
+            newstate.model.compile_rules()
 
         # Update the actions available for the next step, we don't want to be able to 
         # add the same edge twice, or have an inhibiting and activating edge from the
@@ -94,6 +92,3 @@ class SearchState():
     # so we have to define a placeholder comparison operator
     def __lt__(self, b):
         return True
-
-
-

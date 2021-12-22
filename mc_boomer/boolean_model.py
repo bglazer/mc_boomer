@@ -81,8 +81,8 @@ class BooleanModel():
             self.update = compile(self.rule_string, filename='<string>',  mode='exec', optimize=2)
             self.changed = False
 
-    def is_connected(self):
-        return nx.is_weakly_connected(self.graph)
+    #def is_connected(self):
+    #    return nx.is_weakly_connected(self.graph)
 
 
     def update_sync(self):
@@ -150,31 +150,29 @@ class BooleanModel():
     # TODO async updating doesn't work now
     #####################################################
     def update_async(self):
-        node = self.nodes[random.choice(self.nodes)]
+        node = random.choice(self.nodes)
 
-        activators, inhibitors = self.edges[node]
-        activated = False
-        inhibited = False
+        activators, inhibitors = self.rules[node]
+
+        breakpoint()
+        # or clause
         for inhibitor in inhibitors:
-            if self.state[inhibitor]:
+            # And clause, taking into account negation with '~'
+            if all([self.state[src] if '~'!=src[0] else not self.state[src[1:]] for src in inhibitor]):
                 self.state[node] = False
                 return
         for activator in activators:
-            if self.state[activator]:
+            if all([self.state[src] if '~'!=src[0] else not self.state[src[1:]] for src in activator]):
                 self.state[node] = True
                 return
     
-    def simulate_async(self, num_starts, num_steps, normalize=True):
+    def simulate_async(self, start_states, num_starts, num_steps, normalize=True):
         num_nodes = len(self.nodes)
         state_probs = {} 
         total_steps = num_starts * num_steps
 
-        #starts = product((False,True), repeat=num_nodes)
-        for i in range(num_starts):
-            random_boolean = [random.random() > .5 for i in range(num_nodes)]
-            # node to state mapping
-            start = dict(enumerate(random_boolean))
-            # TODO should this be a deepcopy?
+        start_states, start_probs = zip(*start_states)
+        for start in random.choices(start_states, weights=start_probs, k=num_starts):
             self.state = copy(start)
             state_key = bool_state(self.state)
             if state_key not in state_probs:
