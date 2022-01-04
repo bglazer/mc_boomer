@@ -27,12 +27,11 @@ Action(srcs=(MultiSource('EN','i'),), dst='ptc', type='i'),
 Action(srcs=(MultiSource('CIR','i'),), dst='ptc', type='i'),
 # PTC
 Action(srcs=(MultiSource('ptc','i'),), dst='PTC', type='a'),
-Action(srcs=(MultiSource('PTC','i'), MultiSource('~HH','e')), dst='PTC', type='a'),
-
+Action(srcs=(MultiSource('PTC','i'), MultiSource('HH','e',neg=True)), dst='PTC', type='a'),
 # PH 
 Action(srcs=(MultiSource('PTC','i'),MultiSource('HH','e')), dst='PH', type='a'),
 # SMO
-Action(srcs=(MultiSource('~PTC','i'),), dst='SMO', type='a'),
+Action(srcs=(MultiSource('PTC','i',neg=True),), dst='SMO', type='a'),
 Action(srcs=(MultiSource('HH','e'),), dst='SMO', type='a'),
 # ci
 Action(srcs=(MultiSource('EN','i'),), dst='ci', type='i'),
@@ -40,11 +39,11 @@ Action(srcs=(MultiSource('EN','i'),), dst='ci', type='i'),
 Action(srcs=(MultiSource('ci','i'),), dst='CI', type='a'),
 # CIA
 Action(srcs=(MultiSource('CI', 'i'), MultiSource('SMO', 'i')), dst='CIA', type='a'),
-Action(srcs=(MultiSource('CI', 'i'), MultiSource('HH', 'e')), dst='CIA', type='a'),
+Action(srcs=(MultiSource('CI', 'i'), MultiSource('hh', 'e')), dst='CIA', type='a'),
 # CIR
 Action(srcs=(MultiSource('CI', 'i'),), dst='CIR', type='a'),
 Action(srcs=(MultiSource('SMO', 'i'),), dst='CIR', type='i'),
-Action(srcs=(MultiSource('HH', 'e'),), dst='CIR', type='i'),
+Action(srcs=(MultiSource('hh', 'e'),), dst='CIR', type='i'),
 ]
 
 
@@ -53,13 +52,11 @@ if __name__ == '__main__':
     for action in actions:
         spm.add(action)
 
-    spm.compile_rules(verbose=True)
-    #spm.compile_rules(verbose=False)
-        
+    spm.print_rules()
     state = SegmentPolaritySearchState(spm)
     attractors = state.getAttractors()
     state.printAttractors(attractors)
-    #
+    
     reward = state.getReward()
     print(f'Similarity: {reward:.4f}')
 
@@ -70,8 +67,6 @@ if __name__ == '__main__':
         spm = initialize.emptyModel()
         for action in one_out_actions:
             spm.add(action)
-       
-        spm.compile_rules(verbose=False)
             
         state = SegmentPolaritySearchState(spm)
         

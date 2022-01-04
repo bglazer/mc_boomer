@@ -74,25 +74,25 @@ class SegmentPolaritySearchState(SearchState):
         print('\\newpage')
 
     def getAttractors(self):
-        wild_type_attractors = self.model.simulate(wild_type_initial, fresh_compile=True)
+        wild_type_attractors = self.model.simulate(wild_type_initial)
 
         # hh overexpression experiment
-        #hh_initial_perturb_attractors = self.model.simulate(hh_overexpression, fresh_compile=False)
+        #hh_initial_perturb_attractors = self.model.simulate(hh_overexpression)
 
         # en overexpression experiment
-        #en_initial_perturb_attractors = self.model.simulate(en_overexpression, fresh_compile=False)
+        #en_initial_perturb_attractors = self.model.simulate(en_overexpression)
         
         # wg knockout
         wg_knockout_model = knockout(self.model, ['wg', 'WG'])
-        wg_knockout_attractors = wg_knockout_model.simulate(wild_type_initial, fresh_compile=True)
+        wg_knockout_attractors = wg_knockout_model.simulate(wild_type_initial)
 
         # en knockout
         en_knockout_model = knockout(self.model, ['en', 'EN'])
-        en_knockout_attractors = en_knockout_model.simulate(wild_type_initial, fresh_compile=True)
+        en_knockout_attractors = en_knockout_model.simulate(wild_type_initial)
 
         # hh knockout
         hh_knockout_model = knockout(self.model, ['hh', 'HH'])
-        hh_knockout_attractors = hh_knockout_model.simulate(wild_type_initial, fresh_compile=True)
+        hh_knockout_attractors = hh_knockout_model.simulate(wild_type_initial)
 
         attractors = (wild_type_attractors,
                       #hh_initial_perturb_attractors,

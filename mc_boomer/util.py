@@ -96,7 +96,7 @@ nodes = ['wg', 'WG', 'en', 'EN', 'hh', 'HH', 'ptc', 'PTC', 'PH', 'SMO', 'ci', 'C
 
 def format_actions(actions, end='\n'):
     for i,action in enumerate(actions):
-        exprs = [f'{node}_{"i" if span =="i" else "{i+-1}"}' for node,span in action.srcs]
+        exprs = [f'{"not " if neg else ""}{node}_{"i" if span =="i" else "{i+-1}"}' for node,span,neg in action.srcs]
         t = 'activate' if action.type == 'a' else 'inhibit'
         more = '+' if i < len(actions)-1 else ''
         expr_end = ' ' if i<len(actions)-1 else end

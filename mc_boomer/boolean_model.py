@@ -3,6 +3,7 @@ from itertools import product
 from copy import copy
 import random
 from mc_boomer.util import bool_state, to_int, rotate_list
+from mc_boomer.action import Node
 #import networkx as nx
 
 class BooleanModel():
@@ -10,7 +11,6 @@ class BooleanModel():
         self.rules = rules
         self.nodes = list(rules.keys())
         self.rule_string = None
-        self.changed = False
 
 
     def __copy__(self):
@@ -25,74 +25,44 @@ class BooleanModel():
 
     def add(self, action):
         rule_type_idx = 0 if action.type == 'a' else 1
-        self.rules[action.dst][rule_type_idx].append(action.srcs)
-        self.changed = True
+        self.rules[action.dst][rule_type_idx].append(tuple([Node(src.src, src.neg) for src in action.srcs]))
 
-    def print_expression(self, expression):
-        rule = []
-        for clause in expression:
-            c = []
-            for src, cell_idx in clause:
-                if src[0] == '~':
-                    src = src[1:]
-                    item = f'not {src}_{cell_idx}'
-                else:
-                    item = f'{src}_{cell_idx}'
-                c.append(item)
-            rule.append(' and '.join(c))
-        return ' or '.join(rule)
-
-    def compile_expression(self, expression):
+    def print_clause(self, expression):
         rule = []
         for clause in expression:
             c = []
             for src in clause:
-                if src[0] == '~':
-                    src = src[1:]
-                    item = f"not self.state['{src}']"
+                if src.neg:
+                    item = f"not {src.src}_{src.idx}"
                 else:
-                    item = f"self.state['{src}']"
+                    item = f"{src.src}_{src.idx}"
                 c.append(item)
             rule.append(' and '.join(c))
         return ' or '.join(rule)
-        
-    def compile_rules(self, verbose=False):
-        if self.rule_string is None or self.changed == True:
-            rules = []
-            # Create a string with all the code for all the update rules 
-            for dst, (activators, inhibitors) in self.rules.items():
-                inhibitor_rule = self.compile_expression(inhibitors)
-                activator_rule = self.compile_expression(activators)
 
-                if activator_rule and inhibitor_rule:
-                    rule = f'({activator_rule}) and not ({inhibitor_rule})'
-                elif activator_rule:
-                    rule = f'({activator_rule})'
-                elif inhibitor_rule:
-                    rule = f'not ({inhibitor_rule})'
-                else:
-                    rule = False
-                rules.append(f'new_state[{dst}] = {rule}')
+    def print_rules(self):
+        for dst, (activators, inhibitors) in self.rules.items():
+            inhibitor_rule = self.print_clause(inhibitors)
+            activator_rule = self.print_clause(activators)
 
-            self.rule_string = '\n'.join(rules)
-            # Compile the string into Python bytecode that we can exec later
-            if verbose:
-                print(self.rule_string)
-            self.update = compile(self.rule_string, filename='<string>',  mode='exec', optimize=2)
-            self.changed = False
-
-    #def is_connected(self):
-    #    return nx.is_weakly_connected(self.graph)
-
+            if activator_rule and inhibitor_rule:
+                rule = f'({activator_rule}) and not ({inhibitor_rule})'
+            elif activator_rule:
+                rule = f'({activator_rule})'
+            elif inhibitor_rule:
+                rule = f'not ({inhibitor_rule})'
+            else:
+                rule = False
+            print(f'{dst} = {rule}')            
 
     def update_sync(self):
         new_state = dict()
-        exec(self.update)
+        for node in self.nodes:
+            new_state[node] = self.update(node)
         self.state = new_state
 
 
-    def simulate(self, start_states, return_states=False, fresh_compile=False):
-        self.compile_rules()
+    def simulate(self, start_states, return_states=False):
         attractors = defaultdict(lambda:0)
         for start_state in start_states:
             states = dict()
@@ -107,8 +77,6 @@ class BooleanModel():
 
             # A one step cycle is the same thing as a stable attractor
             # i.e. it never evolves past this one state
-            cycle_start = states[key]
-            # for cyclic attractors, grab every state until the start of the cycle
             cycle_start = states[key]
             cycle = list(states.keys())[cycle_start:]
             
@@ -142,29 +110,23 @@ class BooleanModel():
             start_set.add(start_key)
             start_state = dict(zip(self.rules.keys(), values))
             start_states.append(start_state)
-        self.compile_rules(verbose=True)
         attractors = self.simulate(start_states) 
         return start_states, attractors
 
-    #####################################################
-    # TODO async updating doesn't work now
-    #####################################################
-    def update_async(self):
-        node = random.choice(self.nodes)
-
+    def update(self, node):
         activators, inhibitors = self.rules[node]
 
-        breakpoint()
         # or clause
         for inhibitor in inhibitors:
-            # And clause, taking into account negation with '~'
-            if all([self.state[src] if '~'!=src[0] else not self.state[src[1:]] for src in inhibitor]):
-                self.state[node] = False
-                return
+            # And clause, taking into account negation with neg
+            and_clause = [self.state[src] if not src.neg else not self.state[src] for src in inhibitor]
+            if all(and_clause):
+                return False
         for activator in activators:
-            if all([self.state[src] if '~'!=src[0] else not self.state[src[1:]] for src in activator]):
-                self.state[node] = True
-                return
+            and_clause = [self.state[src] if not src.neg else not self.state[src] for src in activator]
+            if all(and_clause):
+                return True
+        return False
     
     def simulate_async(self, start_states, num_starts, num_steps, normalize=True):
         num_nodes = len(self.nodes)
@@ -180,7 +142,8 @@ class BooleanModel():
             state_probs[state_key] += 1
             # minus one to account for the first step (initial point)
             for step in range(num_steps-1):
-                self.update_async()
+                node = random.choice(self.nodes)
+                self.state[node] = self.update(node)
                 state_key = bool_state(self.state)
                 if state_key not in state_probs:
                     state_probs[state_key] = 0
