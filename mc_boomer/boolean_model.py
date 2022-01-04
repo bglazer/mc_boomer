@@ -142,6 +142,7 @@ class BooleanModel():
     # TODO make state probs a sequence
     # Currently they're aggregated. Disaggregate so that we can see trajectories 
     # TODO make states not a boolean string. Too hard to interpret
+    # TODO calculate percentage of new states added? Like, what's the (rolling) probability that the next state visited is not a state that we've visited before? This could give us a quantitative measure of whether we've "saturated" the state transition graph, and we can stop simulating?
     def simulate_async(self, start_states, num_starts, num_steps, normalize=True):
         num_nodes = len(self.nodes)
         state_probs = {} 
