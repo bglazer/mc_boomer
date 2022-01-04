@@ -3,7 +3,7 @@ from copy import copy
 from mc_boomer import attractors 
 from attractor_data import en_overexpression, hh_overexpression, initial_perturb_true_attractors, knockout_true_attractors, wild_type_initial, wild_type_true_attractors
 from mc_boomer.action import Action
-from mc_boomer.util import print_attractors
+from util import print_attractors
 from mc_boomer.search_state import SearchState
 
 def knockout(model, knockout_nodes):

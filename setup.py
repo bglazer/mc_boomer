@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.1",
     author="Bryan Glazer",
     author_email="bryan.glazer@vanderbilt.edu",
-    description="Monte Carlo Tree Search for Boolean Models",
+    description="Monte Carlo Tree Search for Synthesizing Boolean Models",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/bglazer/mc_boomer",
