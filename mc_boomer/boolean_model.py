@@ -70,6 +70,10 @@ class BooleanModel():
             self.state = start_state
             key = tuple(self.state.items())
             while key not in states:
+                #print(step)
+                #for k,v in key:
+                #    print(k,v)
+                #print('-----')
                 states[key] = step
                 self.update_sync()
                 step += 1
@@ -116,18 +120,28 @@ class BooleanModel():
     def update(self, node):
         activators, inhibitors = self.rules[node]
 
+        state = []
+        or_clause = []
         # or clause
         for inhibitor in inhibitors:
             # And clause, taking into account negation with neg
             and_clause = [self.state[src] if not src.neg else not self.state[src] for src in inhibitor]
-            if all(and_clause):
-                return False
+            or_clause.append(all(and_clause))
+        if inhibitors:
+            state.append(not any(or_clause))
+
+        or_clause = []
         for activator in activators:
             and_clause = [self.state[src] if not src.neg else not self.state[src] for src in activator]
-            if all(and_clause):
-                return True
-        return False
+            or_clause.append(all(and_clause))
+        if activators:
+            state.append(any(or_clause))
+
+        return len(state)>0 and all(state)
     
+    # TODO make state probs a sequence
+    # Currently they're aggregated. Disaggregate so that we can see trajectories 
+    # TODO make states not a boolean string. Too hard to interpret
     def simulate_async(self, start_states, num_starts, num_steps, normalize=True):
         num_nodes = len(self.nodes)
         state_probs = {} 
@@ -136,7 +150,7 @@ class BooleanModel():
         start_states, start_probs = zip(*start_states)
         for start in random.choices(start_states, weights=start_probs, k=num_starts):
             self.state = copy(start)
-            state_key = bool_state(self.state)
+            state_key = tuple(self.state.items())
             if state_key not in state_probs:
                 state_probs[state_key] = 0
             state_probs[state_key] += 1
@@ -144,7 +158,7 @@ class BooleanModel():
             for step in range(num_steps-1):
                 node = random.choice(self.nodes)
                 self.state[node] = self.update(node)
-                state_key = bool_state(self.state)
+                state_key = tuple(self.state.items())
                 if state_key not in state_probs:
                     state_probs[state_key] = 0
                 state_probs[state_key] += 1
