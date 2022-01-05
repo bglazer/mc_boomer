@@ -12,9 +12,7 @@ class SegmentPolarityModel(LinearModel):
         return SegmentPolarityModel(rules=rules)
 
     def update_sync(self):
-        new_state = dict()
-        exec(self.update)
-        self.state = new_state
+        super().update_sync()
         # TODO add explicit control of constitutively activated patterns
         # SLP is constituitively expressed in the following pattern, repeating every 4 cells:
         # True True False False 
