@@ -1,7 +1,8 @@
 from mc_boomer.action import Action, MultiSource 
 from search_state import SegmentPolaritySearchState
 import initialize
-from mc_boomer.util import print_attractors, format_actions
+from mc_boomer.util import format_actions
+from util import print_attractors
 
 actions = [
 # wg
