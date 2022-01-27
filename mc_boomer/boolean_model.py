@@ -148,9 +148,9 @@ class BooleanModel():
         state_probs = {} 
         total_steps = num_starts * num_steps
 
-        start_states, start_probs = zip(*start_states)
+        start_states, start_probs = zip(*start_states.items())
         for start in random.choices(start_states, weights=start_probs, k=num_starts):
-            self.state = copy(start)
+            self.state = dict(start)
             state_key = tuple(self.state.items())
             if state_key not in state_probs:
                 state_probs[state_key] = 0
