@@ -1,6 +1,8 @@
 from copy import copy
 import mc_boomer.attractors
 from mc_boomer.action import Action
+from mc_boomer import attractors
+from mc_boomer.util import binarize
 
 class SearchState():
     def __init__(self, model, data_attractors, start_states, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
@@ -30,7 +32,7 @@ class SearchState():
         return list(self.actions.items())
     
     #Returns the state which results from taking action 
-    def takeAction(self, action, compile=True): 
+    def takeAction(self, action): 
         newstate = copy(self)
         
         # the action has two parts, the first defines the action to take, adding an edge, etc.
@@ -41,8 +43,6 @@ class SearchState():
             return newstate
             
         newstate.model.add(action)
-        if compile:
-            newstate.model.compile_rules()
 
         # Update the actions available for the next step, we don't want to be able to 
         # add the same edge twice, or have an inhibiting and activating edge from the
@@ -92,3 +92,29 @@ class SearchState():
     # so we have to define a placeholder comparison operator
     def __lt__(self, b):
         return True
+
+class AsyncSearchState(SearchState):
+    def __init__(self, model, data_attractors, start_states, num_starts, num_steps, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
+        super().__init__(model, data_attractors, start_states, stop_prior, min_edges, max_edges, actions, num_edges)
+        self.num_starts = num_starts
+        self.num_steps = num_steps
+
+    #Returns the reward for this state. Only needed for terminal states.
+    def getReward(self): 
+        simulated_attractors = self.model.simulate_async(self.start_states, self.num_starts, self.num_steps)
+
+        similarity = attractors.distribution_similarity(binarize(simulated_attractors), binarize(self.data_attractors))
+        return similarity
+
+    def __copy__(self):
+        newstate = AsyncSearchState(model = copy(self.model),
+                                    num_starts = self.num_starts,
+                                    num_steps = self.num_steps,
+                                    start_states = self.start_states,
+                                    data_attractors = self.data_attractors,
+                                    stop_prior = self.stop_prior,
+                                    min_edges = self.min_edges,
+                                    max_edges = self.max_edges,
+                                    num_edges = self.num_edges,
+                                    actions = copy(self.actions))
+        return newstate
