@@ -1,6 +1,12 @@
 from itertools import product
 from copy import copy
 
+from scipy.spatial import distance_matrix
+from mip import Model, xsum, minimize, CONTINUOUS, OptimizationStatus
+from itertools import product
+import random
+import numpy as np
+
 def pairwise_distance(a,b, penalties=None):
     distances = {}
 
@@ -71,6 +77,75 @@ def similarity(model, true, verbose=False, penalties=None):
 
     return 1-edit_distance/max_distance
 
+def distribution_similarity(a, b, sample=None, weighted_sample=False, verbose=False):
+    a_states, a_probs = zip(*a.items())
+    b_states, b_probs = zip(*b.items())
+    n_a = len(a)
+    n_b = len(b)
+    if sample is not None:
+        a_weights = a_probs if weighted_sample else None
+        b_weights = b_probs if weighted_sample else None
+        a_idx = np.random.choice(len(a), p=a_weights, size=sample, replace=False)
+        b_idx = np.random.choice(len(b), p=b_weights, size=sample, replace=False)
+        ai = list(a.items())
+        bi = list(b.items())
+        a = [ai[i] for i in a_idx]
+        b = [bi[i] for i in b_idx]
+        a_states, a_probs = zip(*a)
+        b_states, b_probs = zip(*b)
+        a_sum = sum(a_probs)
+        b_sum = sum(b_probs)
+        a_probs = [p/a_sum for p in a_probs]
+        b_probs = [p/b_sum for p in b_probs]
+        n_a = n_b = sample
+
+    num_nodes = len(a_states[0])
+    
+    #D_states = pairwise_distances(a_states, b_states, metric='manhattan')
+    D_states = distance_matrix(a_states, b_states, p=1)
+   
+    model = Model()
+    if not verbose:
+        model.verbose=0
+
+    variables = []
+    for i in range(n_a):
+        variables.append(list())
+        for j in range(n_b):
+            variables[i].append(model.add_var(var_type=CONTINUOUS))
+            model += variables[i][j] >= 0
+    
+    for i in range(n_a):
+        # Conserve all of a
+        model += xsum(variables[i][j] for j in range(n_b)) == a_probs[i]
+
+    for j in range(n_b):
+        # Match b
+        model += xsum(variables[i][j] for i in range(n_a)) == b_probs[j]
+    
+
+    model.objective = minimize(
+        xsum(D_states[i][j]*variables[i][j]
+        for i,j in product(range(n_a), range(n_b))))
+
+    
+    model.max_gap = 0.0005
+    status = model.optimize(max_seconds=300)
+    if verbose:
+        if status == OptimizationStatus.OPTIMAL:
+            print(f'optimal solution cost {model.objective_value} found')
+        elif status == OptimizationStatus.FEASIBLE:
+            print(f'sol.cost {model.objective_value} found, best possible: {model.objective_bound}')
+        elif status == OptimizationStatus.NO_SOLUTION_FOUND:
+            print(f'no feasible solution found, lower bound is: {model.objective_bound}')
+
+    if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE:
+        print(1-model.objective_value/num_nodes)
+        return 1-model.objective_value/num_nodes
+        #return variables, model.objective_value, status
+        
+    else:
+        return None
 
 def print_attractors(attractors):
     stable, cyclic = attractors
