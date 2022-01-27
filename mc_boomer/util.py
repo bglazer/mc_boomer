@@ -47,6 +47,16 @@ def bool_state(state):
         else: s.append(0)
     return tuple(s)
 
+def binarize(states):
+    states, probs = zip(*states.items())
+    binary_states = []
+    for state in states:
+        b = []
+        for name, value in state:
+            b.append(value)
+        binary_states.append(tuple(b))
+    return dict(zip(tuple(binary_states), probs))
+
 def sort_distribution(pr):
     return sorted(pr.items(), key=lambda x:x[1], reverse=False)
 
