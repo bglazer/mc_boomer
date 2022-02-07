@@ -94,22 +94,26 @@ class SearchState():
         return True
 
 class AsyncSearchState(SearchState):
-    def __init__(self, model, data_attractors, start_states, num_starts, num_steps, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
+    def __init__(self, model, data_attractors, start_states, num_starts, num_steps, similarity_sample, stop_prior=0.0, min_edges=0, max_edges=0, actions=None, num_edges=0):
         super().__init__(model, data_attractors, start_states, stop_prior, min_edges, max_edges, actions, num_edges)
         self.num_starts = num_starts
         self.num_steps = num_steps
+        self.similarity_sample =  similarity_sample
 
     #Returns the reward for this state. Only needed for terminal states.
     def getReward(self): 
         simulated_attractors = self.model.simulate_async(self.start_states, self.num_starts, self.num_steps)
 
-        similarity = attractors.distribution_similarity(binarize(simulated_attractors), binarize(self.data_attractors))
+        similarity = attractors.distribution_similarity(binarize(simulated_attractors), 
+                                                        binarize(self.data_attractors), 
+                                                        weighted_sample=self.similarity_sample)
         return similarity
 
     def __copy__(self):
         newstate = AsyncSearchState(model = copy(self.model),
                                     num_starts = self.num_starts,
                                     num_steps = self.num_steps,
+                                    similarity_sample = self.similarity_sample,
                                     start_states = self.start_states,
                                     data_attractors = self.data_attractors,
                                     stop_prior = self.stop_prior,

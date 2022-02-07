@@ -15,9 +15,9 @@ if __name__ == '__main__':
     for action in actions:
         spm.add(action)
 
-    spm.compile_rules(verbose=True)
+    #spm.compile_rules(verbose=True)
 
-    start_states = []
+    #start_states = []
     #for i in range(n_states):
     #    p = random.random()
     #    start_state = {node: random.random() > .5 for node in spm.nodes}

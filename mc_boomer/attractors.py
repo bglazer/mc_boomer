@@ -140,10 +140,7 @@ def distribution_similarity(a, b, sample=None, weighted_sample=False, verbose=Fa
             print(f'no feasible solution found, lower bound is: {model.objective_bound}')
 
     if status == OptimizationStatus.OPTIMAL or status == OptimizationStatus.FEASIBLE:
-        print(1-model.objective_value/num_nodes)
         return 1-model.objective_value/num_nodes
-        #return variables, model.objective_value, status
-        
     else:
         return None
 
